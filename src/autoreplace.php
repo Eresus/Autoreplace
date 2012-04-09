@@ -2,17 +2,11 @@
 /**
  * Автозамена фрагментов страницы
  *
- * Eresus 2, PHP 4.3.0
+ * @version 2.00
  *
- * Описание плагина (допустимо несколько строк)
- *
- * @version 1.00a
- *
- * @copyright   2006-2007, ProCreat Systems, http://procreat.ru/
- * @copyright   2008, Eresus Group, http://eresus.ru/
- * @license     http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @maintainer  Mikhail Krasilnikov <mk@procreat.ru>
- * @author      Mikhail Krasilnikov <mk@procreat.ru>
+ * @copyright 2008, Eresus Group, http://eresus.ru/
+ * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
+ * @author Михаил Красильников <mihalych@vsepofigu.ru>
  *
  * Данная программа является свободным программным обеспечением. Вы
  * вправе распространять ее и/или модифицировать в соответствии с
@@ -31,16 +25,15 @@
  * <http://www.gnu.org/licenses/>
  */
 
-useClass('TListContentPlugin');
-
-class TAutoReplace extends TListContentPlugin {
-	var $name = 'autoreplace';
-	var $version = '1.00b';
-	var $kernel = '2.10rc';
-	var $title = 'Автозамена';
-	var $description = 'Автозамена фрагментов страницы';
-	var $type = 'client,content,ondemand';
-	var $table = array (
+class TAutoReplace extends TListContentPlugin
+{
+	public $name = 'autoreplace';
+	public $version = '2.00a';
+	public $kernel = '2.10';
+	public $title = 'Автозамена';
+	public $description = 'Автозамена фрагментов страницы';
+	public $type = 'client,content,ondemand';
+	public $table = array (
 		'name' => 'autoreplace',
 		'key'=> 'id',
 		'sortMode' => 'position',
@@ -67,22 +60,24 @@ class TAutoReplace extends TListContentPlugin {
 			`caption` varchar(255) default '',
 			`src` varchar(255) default '',
 			`dst` varchar(255) default '',
-			`regexp` tinyint(1) default '0',
+			`re` tinyint(1) default '0',
 			PRIMARY KEY  (`id`),
 			KEY `active` (`active`),
 			KEY `position` (`position`)
 		) TYPE=MyISAM;",
 	);
-	function TAutoReplace()
+
+	public function __construct()
 	{
 		global $Eresus;
 
-		parent::TListContentPlugin();
+		parent::__construct();
 		$Eresus->plugins->events['clientOnPageRender'][] = $this->name;
 		$Eresus->plugins->events['adminOnMenuRender'][] = $this->name;
 	}
 	//-----------------------------------------------------------------------------
-	function insert()
+
+	public function insert()
 	{
 		global $Eresus;
 
@@ -91,12 +86,13 @@ class TAutoReplace extends TListContentPlugin {
 		$item['caption'] = arg('caption', 'dbsafe');
 		$item['src'] = arg('src', 'dbsafe');
 		$item['dst'] = arg('dst', 'dbsafe');
-		$item['regexp'] = arg('regexp', 'int');
+		$item['re'] = arg('re', 'int');
 		$Eresus->db->insert($this->table['name'], $item);
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
-	function update()
+
+	public function update()
 	{
 	global $Eresus, $page;
 
@@ -105,12 +101,13 @@ class TAutoReplace extends TListContentPlugin {
 		$item['caption'] = arg('caption', 'dbsafe');
 		$item['src'] = arg('src', 'dbsafe');
 		$item['dst'] = arg('dst', 'dbsafe');
-		$item['regexp'] = arg('regexp', 'int');
+		$item['re'] = arg('re', 'int');
 		$Eresus->db->updateItem($this->table['name'], $item, "`id`='".$item['id']."'");
-		goto(arg('submitURL'));
+		HTTP::redirect(arg('submitURL'));
 	}
 	//-----------------------------------------------------------------------------
-	function adminAddItem()
+
+	public function adminAddItem()
 	{
 	global $page;
 
@@ -122,7 +119,7 @@ class TAutoReplace extends TListContentPlugin {
 				array ('type' => 'hidden', 'name' => 'action', 'value' => 'insert'),
 				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%', 'maxlength' => '255'),
 				array ('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%', 'maxlength' => '255', 'pattern' => '/.+/', 'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
-				array ('type' => 'checkbox', 'name' => 'regexp', 'label' => 'Регулярное выражение'),
+				array ('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
 				array ('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%', 'maxlength' => '255'),
 			),
 			'buttons' => array('ok', 'cancel'),
@@ -132,7 +129,8 @@ class TAutoReplace extends TListContentPlugin {
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
-	function adminEditItem()
+
+	public function adminEditItem()
 	{
 	global $Eresus, $page;
 
@@ -145,7 +143,7 @@ class TAutoReplace extends TListContentPlugin {
 				array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
 				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%', 'maxlength' => '255'),
 				array ('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%', 'maxlength' => '255', 'pattern' => '/.+/', 'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
-				array ('type' => 'checkbox', 'name' => 'regexp', 'label' => 'Регулярное выражение'),
+				array ('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
 				array ('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%', 'maxlength' => '255'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
@@ -154,26 +152,29 @@ class TAutoReplace extends TListContentPlugin {
 		return $result;
 	}
 	//-----------------------------------------------------------------------------
-	function adminRender()
+
+	public function adminRender()
 	{
 		return $this->adminRenderContent();
 	}
 	//-----------------------------------------------------------------------------
-	function clientOnPageRender($text)
+
+	public function clientOnPageRender($text)
 	{
 		global $Eresus;
 
 		$items = $Eresus->db->select($this->table['name'], '`active`=1', $this->table['sortMode'], $this->table['sortDesc']);
 		if (count($items)) foreach ($items as $item) {
-			if ($item['regexp'])
-				$text = preg_replace(StripSlashes($item['src']), $item['dst'], $text);
+			if ($item['re'])
+				$text = preg_replace($item['src'], $item['dst'], $text);
 			else
-				$text = str_replace(StripSlashes($item['src']), $item['dst'], $text);
+				$text = str_replace($item['src'], $item['dst'], $text);
 		}
 		return $text;
 	}
 	//-----------------------------------------------------------------------------
-	function adminOnMenuRender()
+
+	public function adminOnMenuRender()
 	{
 		global $page;
 
@@ -181,5 +182,3 @@ class TAutoReplace extends TListContentPlugin {
 	}
 	//-----------------------------------------------------------------------------
 }
-
-?>

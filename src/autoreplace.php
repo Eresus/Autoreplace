@@ -1,37 +1,37 @@
 <?php
 /**
- * Автозамена фрагментов страницы
+ * РђРІС‚РѕР·Р°РјРµРЅР° С„СЂР°РіРјРµРЅС‚РѕРІ СЃС‚СЂР°РЅРёС†С‹
  *
- * @version 2.00
+ * @version 3.00
  *
  * @copyright 2008, Eresus Group, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
- * @author Михаил Красильников <mihalych@vsepofigu.ru>
+ * @author РњРёС…Р°РёР» РљСЂР°СЃРёР»СЊРЅРёРєРѕРІ <mihalych@vsepofigu.ru>
  *
- * Данная программа является свободным программным обеспечением. Вы
- * вправе распространять ее и/или модифицировать в соответствии с
- * условиями версии 3 либо (по вашему выбору) с условиями более поздней
- * версии Стандартной Общественной Лицензии GNU, опубликованной Free
+ * Р”Р°РЅРЅР°СЏ РїСЂРѕРіСЂР°РјРјР° СЏРІР»СЏРµС‚СЃСЏ СЃРІРѕР±РѕРґРЅС‹Рј РїСЂРѕРіСЂР°РјРјРЅС‹Рј РѕР±РµСЃРїРµС‡РµРЅРёРµРј. Р’С‹
+ * РІРїСЂР°РІРµ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏС‚СЊ РµРµ Рё/РёР»Рё РјРѕРґРёС„РёС†РёСЂРѕРІР°С‚СЊ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ
+ * СѓСЃР»РѕРІРёСЏРјРё РІРµСЂСЃРёРё 3 Р»РёР±Рѕ (РїРѕ РІР°С€РµРјСѓ РІС‹Р±РѕСЂСѓ) СЃ СѓСЃР»РѕРІРёСЏРјРё Р±РѕР»РµРµ РїРѕР·РґРЅРµР№
+ * РІРµСЂСЃРёРё РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё GNU, РѕРїСѓР±Р»РёРєРѕРІР°РЅРЅРѕР№ Free
  * Software Foundation.
  *
- * Мы распространяем эту программу в надежде на то, что она будет вам
- * полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том
- * числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ
- * ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной
- * информации ознакомьтесь со Стандартной Общественной Лицензией GNU.
+ * РњС‹ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅСЏРµРј СЌС‚Сѓ РїСЂРѕРіСЂР°РјРјСѓ РІ РЅР°РґРµР¶РґРµ РЅР° С‚Рѕ, С‡С‚Рѕ РѕРЅР° Р±СѓРґРµС‚ РІР°Рј
+ * РїРѕР»РµР·РЅРѕР№, РѕРґРЅР°РєРѕ РќР• РџР Р•Р”РћРЎРўРђР’Р›РЇР•Рњ РќРђ РќР•Р• РќРРљРђРљРРҐ Р“РђР РђРќРўРР™, РІ С‚РѕРј
+ * С‡РёСЃР»Рµ Р“РђР РђРќРўРР РўРћР’РђР РќРћР“Рћ РЎРћРЎРўРћРЇРќРРЇ РџР Р РџР РћР”РђР–Р• Рё РџР РР“РћР”РќРћРЎРўР Р”Р›РЇ
+ * РРЎРџРћР›Р¬Р—РћР’РђРќРРЇ Р’ РљРћРќРљР Р•РўРќР«РҐ Р¦Р•Р›РЇРҐ. Р”Р»СЏ РїРѕР»СѓС‡РµРЅРёСЏ Р±РѕР»РµРµ РїРѕРґСЂРѕР±РЅРѕР№
+ * РёРЅС„РѕСЂРјР°С†РёРё РѕР·РЅР°РєРѕРјСЊС‚РµСЃСЊ СЃРѕ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРµР№ GNU.
  *
- * Вы должны были получить копию Стандартной Общественной Лицензии
- * GNU с этой программой. Если Вы ее не получили, смотрите документ на
+ * Р’С‹ РґРѕР»Р¶РЅС‹ Р±С‹Р»Рё РїРѕР»СѓС‡РёС‚СЊ РєРѕРїРёСЋ РЎС‚Р°РЅРґР°СЂС‚РЅРѕР№ РћР±С‰РµСЃС‚РІРµРЅРЅРѕР№ Р›РёС†РµРЅР·РёРё
+ * GNU СЃ СЌС‚РѕР№ РїСЂРѕРіСЂР°РјРјРѕР№. Р•СЃР»Рё Р’С‹ РµРµ РЅРµ РїРѕР»СѓС‡РёР»Рё, СЃРјРѕС‚СЂРёС‚Рµ РґРѕРєСѓРјРµРЅС‚ РЅР°
  * <http://www.gnu.org/licenses/>
  */
 
 class TAutoReplace extends TListContentPlugin
 {
 	public $name = 'autoreplace';
-	public $version = '2.00a';
-	public $kernel = '2.10';
-	public $title = 'Автозамена';
-	public $description = 'Автозамена фрагментов страницы';
+	public $version = '3.00a';
+	public $kernel = '3.00';
+	public $title = 'РђРІС‚РѕР·Р°РјРµРЅР°';
+	public $description = 'РђРІС‚РѕР·Р°РјРµРЅР° С„СЂР°РіРјРµРЅС‚РѕРІ СЃС‚СЂР°РЅРёС†С‹';
 	public $type = 'client,content,ondemand';
 	public $table = array (
 		'name' => 'autoreplace',
@@ -39,7 +39,7 @@ class TAutoReplace extends TListContentPlugin
 		'sortMode' => 'position',
 		'sortDesc' => false,
 		'columns' => array(
-			array('name' => 'caption', 'caption' => 'Замена'),
+			array('name' => 'caption', 'caption' => 'Р—Р°РјРµРЅР°'),
 		),
 		'controls' => array (
 			'delete' => '',
@@ -64,7 +64,7 @@ class TAutoReplace extends TListContentPlugin
 			PRIMARY KEY  (`id`),
 			KEY `active` (`active`),
 			KEY `position` (`position`)
-		) TYPE=MyISAM;",
+		) ENGINE=MyISAM;",
 	);
 
 	public function __construct()
@@ -94,7 +94,7 @@ class TAutoReplace extends TListContentPlugin
 
 	public function update()
 	{
-	global $Eresus, $page;
+		global $Eresus, $page;
 
 		$item = $Eresus->db->selectItem($this->table['name'], "`id`='".arg('update', 'int')."'");
 		$item['active'] = true;
@@ -109,18 +109,18 @@ class TAutoReplace extends TListContentPlugin
 
 	public function adminAddItem()
 	{
-	global $page;
+		global $page;
 
 		$form = array(
 			'name' => 'AddForm',
-			'caption' => 'Добавить автозамену',
+			'caption' => 'Р”РѕР±Р°РІРёС‚СЊ Р°РІС‚РѕР·Р°РјРµРЅСѓ',
 			'width'=>'100%',
 			'fields' => array (
 				array ('type' => 'hidden', 'name' => 'action', 'value' => 'insert'),
-				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%', 'maxlength' => '255'),
-				array ('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%', 'maxlength' => '255', 'pattern' => '/.+/', 'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
-				array ('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
-				array ('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%', 'maxlength' => '255'),
+				array ('type' => 'edit', 'name' => 'caption', 'label' => 'РќР°Р·РІР°РЅРёРµ', 'width' => '100%', 'maxlength' => '255'),
+				array ('type' => 'edit', 'name' => 'src', 'label' => 'Р§С‚Рѕ Р·Р°РјРµРЅСЏС‚СЊ', 'width' => '100%', 'maxlength' => '255', 'pattern' => '/.+/', 'errormsg' => 'Р’С‹ РґРѕР»Р¶РЅС‹ СѓРєР°Р·Р°С‚СЊ С‚РµРєСЃС‚ РІ РїРѕР»Рµ "Р§С‚Рѕ Р·Р°РјРµРЅСЏС‚СЊ"'),
+				array ('type' => 'checkbox', 'name' => 're', 'label' => 'Р РµРіСѓР»СЏСЂРЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ'),
+				array ('type' => 'edit', 'name' => 'dst', 'label' => 'РќР° С‡С‚Рѕ Р·Р°РјРµРЅСЏС‚СЊ', 'width' => '100%', 'maxlength' => '255'),
 			),
 			'buttons' => array('ok', 'cancel'),
 		);
@@ -132,19 +132,19 @@ class TAutoReplace extends TListContentPlugin
 
 	public function adminEditItem()
 	{
-	global $Eresus, $page;
+		global $Eresus, $page;
 
 		$item = $Eresus->db->selectItem($this->table['name'], "`id`='".arg('id')."'");
 		$form = array(
 			'name' => 'EditForm',
-			'caption' => 'Редактировать автозамену',
+			'caption' => 'Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ Р°РІС‚РѕР·Р°РјРµРЅСѓ',
 			'width' => '500px',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%', 'maxlength' => '255'),
-				array ('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%', 'maxlength' => '255', 'pattern' => '/.+/', 'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
-				array ('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
-				array ('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%', 'maxlength' => '255'),
+				array ('type' => 'edit', 'name' => 'caption', 'label' => 'РќР°Р·РІР°РЅРёРµ', 'width' => '100%', 'maxlength' => '255'),
+				array ('type' => 'edit', 'name' => 'src', 'label' => 'Р§С‚Рѕ Р·Р°РјРµРЅСЏС‚СЊ', 'width' => '100%', 'maxlength' => '255', 'pattern' => '/.+/', 'errormsg' => 'Р’С‹ РґРѕР»Р¶РЅС‹ СѓРєР°Р·Р°С‚СЊ С‚РµРєСЃС‚ РІ РїРѕР»Рµ "Р§С‚Рѕ Р·Р°РјРµРЅСЏС‚СЊ"'),
+				array ('type' => 'checkbox', 'name' => 're', 'label' => 'Р РµРіСѓР»СЏСЂРЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ'),
+				array ('type' => 'edit', 'name' => 'dst', 'label' => 'РќР° С‡С‚Рѕ Р·Р°РјРµРЅСЏС‚СЊ', 'width' => '100%', 'maxlength' => '255'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
@@ -164,11 +164,19 @@ class TAutoReplace extends TListContentPlugin
 		global $Eresus;
 
 		$items = $Eresus->db->select($this->table['name'], '`active`=1', $this->table['sortMode'], $this->table['sortDesc']);
-		if (count($items)) foreach ($items as $item) {
-			if ($item['re'])
-				$text = preg_replace($item['src'], $item['dst'], $text);
-			else
-				$text = str_replace($item['src'], $item['dst'], $text);
+		if (count($items)) 
+		{
+			foreach ($items as $item) 
+			{
+				if ($item['re'])
+				{
+					$text = preg_replace($item['src'], $item['dst'], $text);
+				}
+				else
+				{
+					$text = str_replace($item['src'], $item['dst'], $text);
+				}
+			}
 		}
 		return $text;
 	}
@@ -178,7 +186,7 @@ class TAutoReplace extends TListContentPlugin
 	{
 		global $page;
 
-		$page->addMenuItem('Расширения', array ("access"  => EDITOR, "link"  => $this->name, "caption"  => $this->title, "hint"  => $this->description));
+		$page->addMenuItem('Р Р°СЃС€РёСЂРµРЅРёСЏ', array ("access"  => EDITOR, "link"  => $this->name, "caption"  => $this->title, "hint"  => $this->description));
 	}
 	//-----------------------------------------------------------------------------
 }

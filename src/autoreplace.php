@@ -2,7 +2,7 @@
 /**
  * Автозамена фрагментов страницы
  *
- * @version 3.00
+ * @version 2.00
  *
  * @copyright 2008, Eresus Group, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
@@ -28,8 +28,8 @@
 class TAutoReplace extends TListContentPlugin
 {
 	public $name = 'autoreplace';
-	public $version = '3.00a';
-	public $kernel = '3.00';
+	public $version = '2.00a';
+	public $kernel = '3.00a';
 	public $title = 'Автозамена';
 	public $description = 'Автозамена фрагментов страницы';
 	public $type = 'client,content,ondemand';
@@ -117,10 +117,14 @@ class TAutoReplace extends TListContentPlugin
 			'width'=>'100%',
 			'fields' => array (
 				array ('type' => 'hidden', 'name' => 'action', 'value' => 'insert'),
-				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%', 'maxlength' => '255'),
-				array ('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%', 'maxlength' => '255', 'pattern' => '/.+/', 'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
+				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%',
+					'maxlength' => '255'),
+				array ('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%',
+					'maxlength' => '255', 'pattern' => '/.+/',
+					'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
 				array ('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
-				array ('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%', 'maxlength' => '255'),
+				array ('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%',
+					'maxlength' => '255'),
 			),
 			'buttons' => array('ok', 'cancel'),
 		);

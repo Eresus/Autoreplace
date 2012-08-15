@@ -94,7 +94,7 @@ class TAutoReplace extends TListContentPlugin
 
 	public function update()
 	{
-		global $Eresus, $page;
+		global $Eresus;
 
 		$item = $Eresus->db->selectItem($this->table['name'], "`id`='".arg('update', 'int')."'");
 		$item['active'] = true;

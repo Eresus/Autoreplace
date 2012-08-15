@@ -50,7 +50,7 @@ class TAutoReplace extends TListContentPlugin
 		'tabs' => array(
 			'width'=>'180px',
 			'items'=>array(
-			 array('caption'=>strAdd, 'name'=>'action', 'value'=>'create')
+				array('caption'=>strAdd, 'name'=>'action', 'value'=>'create')
 			),
 		),
 		'sql' => "(
@@ -69,6 +69,7 @@ class TAutoReplace extends TListContentPlugin
 
 	public function __construct()
 	{
+		/* @var Eresus $Eresus */
 		global $Eresus;
 
 		parent::__construct();
@@ -79,6 +80,7 @@ class TAutoReplace extends TListContentPlugin
 
 	public function insert()
 	{
+		/* @var Eresus $Eresus */
 		global $Eresus;
 
 		$item['active'] = true;
@@ -94,6 +96,7 @@ class TAutoReplace extends TListContentPlugin
 
 	public function update()
 	{
+		/* @var Eresus $Eresus */
 		global $Eresus;
 
 		$item = $Eresus->db->selectItem($this->table['name'], "`id`='".arg('update', 'int')."'");
@@ -109,6 +112,7 @@ class TAutoReplace extends TListContentPlugin
 
 	public function adminAddItem()
 	{
+		/* @var TAdminUI $page */
 		global $page;
 
 		$form = array(
@@ -136,6 +140,8 @@ class TAutoReplace extends TListContentPlugin
 
 	public function adminEditItem()
 	{
+		/* @var Eresus $Eresus */
+		/* @var TAdminUI $page */
 		global $Eresus, $page;
 
 		$item = $Eresus->db->selectItem($this->table['name'], "`id`='".arg('id')."'");
@@ -145,10 +151,14 @@ class TAutoReplace extends TListContentPlugin
 			'width' => '500px',
 			'fields' => array (
 				array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%', 'maxlength' => '255'),
-				array ('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%', 'maxlength' => '255', 'pattern' => '/.+/', 'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
+				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%',
+					'maxlength' => '255'),
+				array ('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%',
+					'maxlength' => '255', 'pattern' => '/.+/',
+					'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
 				array ('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
-				array ('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%', 'maxlength' => '255'),
+				array ('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%',
+					'maxlength' => '255'),
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
@@ -165,9 +175,11 @@ class TAutoReplace extends TListContentPlugin
 
 	public function clientOnPageRender($text)
 	{
+		/* @var Eresus $Eresus */
 		global $Eresus;
 
-		$items = $Eresus->db->select($this->table['name'], '`active`=1', $this->table['sortMode'], $this->table['sortDesc']);
+		$items = $Eresus->db->select($this->table['name'], '`active`=1', $this->table['sortMode'],
+			$this->table['sortDesc']);
 		if (count($items)) 
 		{
 			foreach ($items as $item) 
@@ -188,9 +200,11 @@ class TAutoReplace extends TListContentPlugin
 
 	public function adminOnMenuRender()
 	{
+		/* @var TAdminUI $page */
 		global $page;
 
-		$page->addMenuItem('Расширения', array ("access"  => EDITOR, "link"  => $this->name, "caption"  => $this->title, "hint"  => $this->description));
+		$page->addMenuItem('Расширения', array ("access"  => EDITOR, "link"  => $this->name,
+			"caption"  => $this->title, "hint"  => $this->description));
 	}
 	//-----------------------------------------------------------------------------
 }

@@ -25,6 +25,9 @@
  * <http://www.gnu.org/licenses/>
  */
 
+/**
+ * Основной класс модуля
+ */
 class TAutoReplace extends TListContentPlugin
 {
 	public $name = 'autoreplace';
@@ -76,7 +79,6 @@ class TAutoReplace extends TListContentPlugin
 		$Eresus->plugins->events['clientOnPageRender'][] = $this->name;
 		$Eresus->plugins->events['adminOnMenuRender'][] = $this->name;
 	}
-	//-----------------------------------------------------------------------------
 
 	public function insert()
 	{
@@ -92,7 +94,6 @@ class TAutoReplace extends TListContentPlugin
 		$Eresus->db->insert($this->table['name'], $item);
 		HTTP::redirect(arg('submitURL'));
 	}
-	//-----------------------------------------------------------------------------
 
 	public function update()
 	{
@@ -108,7 +109,6 @@ class TAutoReplace extends TListContentPlugin
 		$Eresus->db->updateItem($this->table['name'], $item, "`id`='".$item['id']."'");
 		HTTP::redirect(arg('submitURL'));
 	}
-	//-----------------------------------------------------------------------------
 
 	public function adminAddItem()
 	{
@@ -136,7 +136,6 @@ class TAutoReplace extends TListContentPlugin
 		$result = $page->renderForm($form);
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
 	public function adminEditItem()
 	{
@@ -165,13 +164,11 @@ class TAutoReplace extends TListContentPlugin
 		$result = $page->renderForm($form, $item);
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
 	public function adminRender()
 	{
 		return $this->adminRenderContent();
 	}
-	//-----------------------------------------------------------------------------
 
 	public function clientOnPageRender($text)
 	{
@@ -196,7 +193,6 @@ class TAutoReplace extends TListContentPlugin
 		}
 		return $text;
 	}
-	//-----------------------------------------------------------------------------
 
 	public function adminOnMenuRender()
 	{
@@ -206,5 +202,5 @@ class TAutoReplace extends TListContentPlugin
 		$page->addMenuItem('Расширения', array ("access"  => EDITOR, "link"  => $this->name,
 			"caption"  => $this->title, "hint"  => $this->description));
 	}
-	//-----------------------------------------------------------------------------
 }
+

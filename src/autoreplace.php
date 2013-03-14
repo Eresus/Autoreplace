@@ -25,10 +25,13 @@
  * <http://www.gnu.org/licenses/>
  */
 
+/**
+ * Основной класс модуля
+ */
 class TAutoReplace extends TListContentPlugin
 {
 	public $name = 'autoreplace';
-	public $version = '2.00a';
+	public $version = '2.00';
 	public $kernel = '3.00a';
 	public $title = 'Автозамена';
 	public $description = 'Автозамена фрагментов страницы';
@@ -69,52 +72,40 @@ class TAutoReplace extends TListContentPlugin
 
 	public function __construct()
 	{
-		/* @var Eresus $Eresus */
-		global $Eresus;
-
 		parent::__construct();
-		$Eresus->plugins->events['clientOnPageRender'][] = $this->name;
-		$Eresus->plugins->events['adminOnMenuRender'][] = $this->name;
+		$plugins = Eresus_CMS::getLegacyKernel()->plugins;
+		$plugins->events['clientOnPageRender'][] = $this->name;
+		$plugins->events['adminOnMenuRender'][] = $this->name;
 	}
-	//-----------------------------------------------------------------------------
 
 	public function insert()
 	{
-		/* @var Eresus $Eresus */
-		global $Eresus;
-
+		$db = Eresus_CMS::getLegacyKernel()->db;
 		$item['active'] = true;
-		$item['position'] = $Eresus->db->count($this->table['name']);
+		$item['position'] = $db->count($this->table['name']);
 		$item['caption'] = arg('caption', 'dbsafe');
 		$item['src'] = arg('src', 'dbsafe');
 		$item['dst'] = arg('dst', 'dbsafe');
 		$item['re'] = arg('re', 'int');
-		$Eresus->db->insert($this->table['name'], $item);
+		$db->insert($this->table['name'], $item);
 		HTTP::redirect(arg('submitURL'));
 	}
-	//-----------------------------------------------------------------------------
 
 	public function update()
 	{
-		/* @var Eresus $Eresus */
-		global $Eresus;
-
-		$item = $Eresus->db->selectItem($this->table['name'], "`id`='".arg('update', 'int')."'");
+		$db = Eresus_CMS::getLegacyKernel()->db;
+		$item = $db->selectItem($this->table['name'], "`id`='".arg('update', 'int')."'");
 		$item['active'] = true;
 		$item['caption'] = arg('caption', 'dbsafe');
 		$item['src'] = arg('src', 'dbsafe');
 		$item['dst'] = arg('dst', 'dbsafe');
 		$item['re'] = arg('re', 'int');
-		$Eresus->db->updateItem($this->table['name'], $item, "`id`='".$item['id']."'");
+		$db->updateItem($this->table['name'], $item, "`id`='".$item['id']."'");
 		HTTP::redirect(arg('submitURL'));
 	}
-	//-----------------------------------------------------------------------------
 
 	public function adminAddItem()
 	{
-		/* @var TAdminUI $page */
-		global $page;
-
 		$form = array(
 			'name' => 'AddForm',
 			'caption' => 'Добавить автозамену',
@@ -133,18 +124,16 @@ class TAutoReplace extends TListContentPlugin
 			'buttons' => array('ok', 'cancel'),
 		);
 
+		/** @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
 		$result = $page->renderForm($form);
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
 	public function adminEditItem()
 	{
-		/* @var Eresus $Eresus */
-		/* @var TAdminUI $page */
-		global $Eresus, $page;
-
-		$item = $Eresus->db->selectItem($this->table['name'], "`id`='".arg('id')."'");
+		$db = Eresus_CMS::getLegacyKernel()->db;
+		$item = $db->selectItem($this->table['name'], "`id`='".arg('id')."'");
 		$form = array(
 			'name' => 'EditForm',
 			'caption' => 'Редактировать автозамену',
@@ -162,23 +151,22 @@ class TAutoReplace extends TListContentPlugin
 			),
 			'buttons' => array('ok', 'apply', 'cancel'),
 		);
+
+		/** @var TAdminUI $page */
+		$page = Eresus_Kernel::app()->getPage();
 		$result = $page->renderForm($form, $item);
 		return $result;
 	}
-	//-----------------------------------------------------------------------------
 
 	public function adminRender()
 	{
 		return $this->adminRenderContent();
 	}
-	//-----------------------------------------------------------------------------
 
 	public function clientOnPageRender($text)
 	{
-		/* @var Eresus $Eresus */
-		global $Eresus;
-
-		$items = $Eresus->db->select($this->table['name'], '`active`=1', $this->table['sortMode'],
+		$db = Eresus_CMS::getLegacyKernel()->db;
+		$items = $db->select($this->table['name'], '`active`=1', $this->table['sortMode'],
 			$this->table['sortDesc']);
 		if (count($items)) 
 		{
@@ -196,15 +184,13 @@ class TAutoReplace extends TListContentPlugin
 		}
 		return $text;
 	}
-	//-----------------------------------------------------------------------------
 
 	public function adminOnMenuRender()
 	{
 		/* @var TAdminUI $page */
-		global $page;
-
+		$page = Eresus_Kernel::app()->getPage();
 		$page->addMenuItem('Расширения', array ("access"  => EDITOR, "link"  => $this->name,
 			"caption"  => $this->title, "hint"  => $this->description));
 	}
-	//-----------------------------------------------------------------------------
 }
+

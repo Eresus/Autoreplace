@@ -31,7 +31,7 @@
 class TAutoReplace extends TListContentPlugin
 {
 	public $name = 'autoreplace';
-	public $version = '2.00a';
+	public $version = '2.00';
 	public $kernel = '3.00a';
 	public $title = 'Автозамена';
 	public $description = 'Автозамена фрагментов страницы';

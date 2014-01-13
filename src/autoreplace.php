@@ -2,7 +2,7 @@
 /**
  * Автозамена фрагментов страницы
  *
- * @version 2.00
+ * @version ${product.version}
  *
  * @copyright 2008, Eresus Group, http://eresus.ru/
  * @license http://www.gnu.org/licenses/gpl.txt  GPL License 3
@@ -31,7 +31,7 @@
 class TAutoReplace extends TListContentPlugin
 {
 	public $name = 'autoreplace';
-	public $version = '2.00a';
+	public $version = '${product.version}';
 	public $kernel = '3.00a';
 	public $title = 'Автозамена';
 	public $description = 'Автозамена фрагментов страницы';

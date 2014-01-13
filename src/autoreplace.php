@@ -30,33 +30,33 @@
  */
 class TAutoReplace extends TListContentPlugin
 {
-	public $name = 'autoreplace';
-	public $version = '${product.version}';
-	public $kernel = '3.00a';
-	public $title = 'Автозамена';
-	public $description = 'Автозамена фрагментов страницы';
-	public $type = 'client,content,ondemand';
-	public $table = array (
-		'name' => 'autoreplace',
-		'key'=> 'id',
-		'sortMode' => 'position',
-		'sortDesc' => false,
-		'columns' => array(
-			array('name' => 'caption', 'caption' => 'Замена'),
-		),
-		'controls' => array (
-			'delete' => '',
-			'edit' => '',
-			'position' => '',
-			'toggle' => '',
-		),
-		'tabs' => array(
-			'width'=>'180px',
-			'items'=>array(
-				array('caption'=>strAdd, 'name'=>'action', 'value'=>'create')
-			),
-		),
-		'sql' => "(
+    public $name = 'autoreplace';
+    public $version = '${product.version}';
+    public $kernel = '3.00a';
+    public $title = 'Автозамена';
+    public $description = 'Автозамена фрагментов страницы';
+    public $type = 'client,content,ondemand';
+    public $table = array(
+        'name' => 'autoreplace',
+        'key' => 'id',
+        'sortMode' => 'position',
+        'sortDesc' => false,
+        'columns' => array(
+            array('name' => 'caption', 'caption' => 'Замена'),
+        ),
+        'controls' => array(
+            'delete' => '',
+            'edit' => '',
+            'position' => '',
+            'toggle' => '',
+        ),
+        'tabs' => array(
+            'width' => '180px',
+            'items' => array(
+                array('caption' => strAdd, 'name' => 'action', 'value' => 'create')
+            ),
+        ),
+        'sql' => "(
 			`id` int(10) unsigned NOT NULL auto_increment,
 			`active` tinyint(1) unsigned NOT NULL default '1',
 			`position` int(10) unsigned default NULL,
@@ -68,129 +68,129 @@ class TAutoReplace extends TListContentPlugin
 			KEY `active` (`active`),
 			KEY `position` (`position`)
 		) ENGINE=MyISAM;",
-	);
+    );
 
-	public function __construct()
-	{
-		parent::__construct();
-		$plugins = Eresus_CMS::getLegacyKernel()->plugins;
-		$plugins->events['clientOnPageRender'][] = $this->name;
-		$plugins->events['adminOnMenuRender'][] = $this->name;
-	}
+    public function __construct()
+    {
+        parent::__construct();
+        $plugins = Eresus_CMS::getLegacyKernel()->plugins;
+        $plugins->events['clientOnPageRender'][] = $this->name;
+        $plugins->events['adminOnMenuRender'][] = $this->name;
+    }
 
-	public function insert()
-	{
-		$db = Eresus_CMS::getLegacyKernel()->db;
-		$item['active'] = true;
-		$item['position'] = $db->count($this->table['name']);
-		$item['caption'] = arg('caption', 'dbsafe');
-		$item['src'] = arg('src', 'dbsafe');
-		$item['dst'] = arg('dst', 'dbsafe');
-		$item['re'] = arg('re', 'int');
-		$db->insert($this->table['name'], $item);
-		HTTP::redirect(arg('submitURL'));
-	}
+    public function insert()
+    {
+        $db = Eresus_CMS::getLegacyKernel()->db;
+        $item['active'] = true;
+        $item['position'] = $db->count($this->table['name']);
+        $item['caption'] = arg('caption', 'dbsafe');
+        $item['src'] = arg('src', 'dbsafe');
+        $item['dst'] = arg('dst', 'dbsafe');
+        $item['re'] = arg('re', 'int');
+        $db->insert($this->table['name'], $item);
+        HTTP::redirect(arg('submitURL'));
+    }
 
-	public function update()
-	{
-		$db = Eresus_CMS::getLegacyKernel()->db;
-		$item = $db->selectItem($this->table['name'], "`id`='".arg('update', 'int')."'");
-		$item['active'] = true;
-		$item['caption'] = arg('caption', 'dbsafe');
-		$item['src'] = arg('src', 'dbsafe');
-		$item['dst'] = arg('dst', 'dbsafe');
-		$item['re'] = arg('re', 'int');
-		$db->updateItem($this->table['name'], $item, "`id`='".$item['id']."'");
-		HTTP::redirect(arg('submitURL'));
-	}
+    public function update()
+    {
+        $db = Eresus_CMS::getLegacyKernel()->db;
+        $item = $db->selectItem($this->table['name'], "`id`='" . arg('update', 'int') . "'");
+        $item['active'] = true;
+        $item['caption'] = arg('caption', 'dbsafe');
+        $item['src'] = arg('src', 'dbsafe');
+        $item['dst'] = arg('dst', 'dbsafe');
+        $item['re'] = arg('re', 'int');
+        $db->updateItem($this->table['name'], $item, "`id`='" . $item['id'] . "'");
+        HTTP::redirect(arg('submitURL'));
+    }
 
-	public function adminAddItem()
-	{
-		$form = array(
-			'name' => 'AddForm',
-			'caption' => 'Добавить автозамену',
-			'width'=>'100%',
-			'fields' => array (
-				array ('type' => 'hidden', 'name' => 'action', 'value' => 'insert'),
-				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%',
-					'maxlength' => '255'),
-				array ('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%',
-					'maxlength' => '255', 'pattern' => '/.+/',
-					'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
-				array ('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
-				array ('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%',
-					'maxlength' => '255'),
-			),
-			'buttons' => array('ok', 'cancel'),
-		);
+    public function adminAddItem()
+    {
+        $form = array(
+            'name' => 'AddForm',
+            'caption' => 'Добавить автозамену',
+            'width' => '100%',
+            'fields' => array(
+                array('type' => 'hidden', 'name' => 'action', 'value' => 'insert'),
+                array('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%',
+                    'maxlength' => '255'),
+                array('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%',
+                    'maxlength' => '255', 'pattern' => '/.+/',
+                    'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
+                array('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
+                array('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%',
+                    'maxlength' => '255'),
+            ),
+            'buttons' => array('ok', 'cancel'),
+        );
 
-		/** @var TAdminUI $page */
-		$page = Eresus_Kernel::app()->getPage();
-		$result = $page->renderForm($form);
-		return $result;
-	}
+        /** @var TAdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
+        $result = $page->renderForm($form);
+        return $result;
+    }
 
-	public function adminEditItem()
-	{
-		$db = Eresus_CMS::getLegacyKernel()->db;
-		$item = $db->selectItem($this->table['name'], "`id`='".arg('id')."'");
-		$form = array(
-			'name' => 'EditForm',
-			'caption' => 'Редактировать автозамену',
-			'width' => '500px',
-			'fields' => array (
-				array('type'=>'hidden','name'=>'update', 'value'=>$item['id']),
-				array ('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%',
-					'maxlength' => '255'),
-				array ('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%',
-					'maxlength' => '255', 'pattern' => '/.+/',
-					'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
-				array ('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
-				array ('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%',
-					'maxlength' => '255'),
-			),
-			'buttons' => array('ok', 'apply', 'cancel'),
-		);
+    public function adminEditItem()
+    {
+        $db = Eresus_CMS::getLegacyKernel()->db;
+        $item = $db->selectItem($this->table['name'], "`id`='" . arg('id') . "'");
+        $form = array(
+            'name' => 'EditForm',
+            'caption' => 'Редактировать автозамену',
+            'width' => '500px',
+            'fields' => array(
+                array('type' => 'hidden', 'name' => 'update', 'value' => $item['id']),
+                array('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%',
+                    'maxlength' => '255'),
+                array('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%',
+                    'maxlength' => '255', 'pattern' => '/.+/',
+                    'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
+                array('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
+                array('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%',
+                    'maxlength' => '255'),
+            ),
+            'buttons' => array('ok', 'apply', 'cancel'),
+        );
 
-		/** @var TAdminUI $page */
-		$page = Eresus_Kernel::app()->getPage();
-		$result = $page->renderForm($form, $item);
-		return $result;
-	}
+        /** @var TAdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
+        $result = $page->renderForm($form, $item);
+        return $result;
+    }
 
-	public function adminRender()
-	{
-		return $this->adminRenderContent();
-	}
+    public function adminRender()
+    {
+        return $this->adminRenderContent();
+    }
 
-	public function clientOnPageRender($text)
-	{
-		$db = Eresus_CMS::getLegacyKernel()->db;
-		$items = $db->select($this->table['name'], '`active`=1', $this->table['sortMode'],
-			$this->table['sortDesc']);
-		if (count($items)) 
-		{
-			foreach ($items as $item) 
-			{
-				if ($item['re'])
-				{
-					$text = preg_replace($item['src'], $item['dst'], $text);
-				}
-				else
-				{
-					$text = str_replace($item['src'], $item['dst'], $text);
-				}
-			}
-		}
-		return $text;
-	}
+    public function clientOnPageRender($text)
+    {
+        $db = Eresus_CMS::getLegacyKernel()->db;
+        $items = $db->select($this->table['name'], '`active`=1', $this->table['sortMode'],
+            $this->table['sortDesc']);
+        if (count($items))
+        {
+            foreach ($items as $item)
+            {
+                if ($item['re'])
+                {
+                    $text = preg_replace($item['src'], $item['dst'], $text);
+                }
+                else
+                {
+                    $text = str_replace($item['src'], $item['dst'], $text);
+                }
+            }
+        }
+        return $text;
+    }
 
-	public function adminOnMenuRender()
-	{
-		/* @var TAdminUI $page */
-		$page = Eresus_Kernel::app()->getPage();
-		$page->addMenuItem('Расширения', array ("access"  => EDITOR, "link"  => $this->name,
-			"caption"  => $this->title, "hint"  => $this->description));
-	}
+    public function adminOnMenuRender()
+    {
+        /* @var TAdminUI $page */
+        $page = Eresus_Kernel::app()->getPage();
+        $page->addMenuItem('Расширения', array("access" => EDITOR, "link" => $this->name,
+            "caption" => $this->title, "hint" => $this->description));
+    }
 }
 

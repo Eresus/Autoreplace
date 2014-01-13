@@ -81,19 +81,7 @@ class TAutoReplace extends TListContentPlugin
             'items' => array(
                 array('caption' => strAdd, 'name' => 'action', 'value' => 'create')
             ),
-        ),
-        'sql' => "(
-			`id` int(10) unsigned NOT NULL auto_increment,
-			`active` tinyint(1) unsigned NOT NULL default '1',
-			`position` int(10) unsigned default NULL,
-			`caption` varchar(255) default '',
-			`src` varchar(255) default '',
-			`dst` varchar(255) default '',
-			`re` tinyint(1) default '0',
-			PRIMARY KEY  (`id`),
-			KEY `active` (`active`),
-			KEY `position` (`position`)
-		) ENGINE=MyISAM;",
+        )
     );
 
     /**
@@ -105,6 +93,26 @@ class TAutoReplace extends TListContentPlugin
         $evd = Eresus_Kernel::app()->getEventDispatcher();
         $evd->addListener('cms.client.render_page', array($this, 'clientOnPageRender'));
         $evd->addListener('cms.admin.start', array($this, 'adminOnMenuRender'));
+    }
+
+    /**
+     * Действия при установке модуля
+     */
+    public function install()
+    {
+        parent::install();
+        $driver = ORM::getManager()->getDriver();
+        $driver->createTable(ORM::getTable($this, 'Autoreplace'));
+    }
+
+    /**
+     * Действия при удалении модуля
+     */
+    public function uninstall()
+    {
+        $driver = ORM::getManager()->getDriver();
+        $driver->dropTable(ORM::getTable($this, 'Autoreplace'));
+        parent::install();
     }
 
     /**

@@ -102,9 +102,9 @@ class TAutoReplace extends TListContentPlugin
     public function __construct()
     {
         parent::__construct();
-        $plugins = Eresus_CMS::getLegacyKernel()->plugins;
-        $plugins->events['clientOnPageRender'][] = $this->name;
-        $plugins->events['adminOnMenuRender'][] = $this->name;
+        $evd = Eresus_Kernel::app()->getEventDispatcher();
+        $evd->addListener('cms.client.render_page', array($this, 'clientOnPageRender'));
+        $evd->addListener('cms.admin.start', array($this, 'adminOnMenuRender'));
     }
 
     /**
@@ -215,17 +215,16 @@ class TAutoReplace extends TListContentPlugin
     /**
      * Проводит замены
      *
-     * @param string $text
-     *
-     * @return string
+     * @param Eresus_Event_Render $event
      */
-    public function clientOnPageRender($text)
+    public function clientOnPageRender(Eresus_Event_Render $event)
     {
         $db = Eresus_CMS::getLegacyKernel()->db;
         $items = $db->select($this->table['name'], '`active`=1', $this->table['sortMode'],
             $this->table['sortDesc']);
         if (count($items))
         {
+            $text = $event->getText();
             foreach ($items as $item)
             {
                 if ($item['re'])
@@ -237,8 +236,8 @@ class TAutoReplace extends TListContentPlugin
                     $text = str_replace($item['src'], $item['dst'], $text);
                 }
             }
+            $event->setText($text);
         }
-        return $text;
     }
 
     /**

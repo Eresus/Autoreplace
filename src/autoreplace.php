@@ -30,12 +30,38 @@
  */
 class TAutoReplace extends TListContentPlugin
 {
-    public $name = 'autoreplace';
+    /**
+     * Версия модуля
+     *
+     * @var string
+     */
     public $version = '${product.version}';
+
+    /**
+     * Требуемая версия CMS
+     * @var string
+     */
     public $kernel = '3.00a';
+
+    /**
+     * Название модуля
+     *
+     * @var string
+     */
     public $title = 'Автозамена';
+
+    /**
+     * Описание модуля
+     *
+     * @var string
+     */
     public $description = 'Автозамена фрагментов страницы';
-    public $type = 'client,content,ondemand';
+
+    /**
+     * Таблица БД
+     * @var array
+     * @deprecated
+     */
     public $table = array(
         'name' => 'autoreplace',
         'key' => 'id',
@@ -70,6 +96,9 @@ class TAutoReplace extends TListContentPlugin
 		) ENGINE=MyISAM;",
     );
 
+    /**
+     * Конструктор модуля
+     */
     public function __construct()
     {
         parent::__construct();
@@ -78,6 +107,9 @@ class TAutoReplace extends TListContentPlugin
         $plugins->events['adminOnMenuRender'][] = $this->name;
     }
 
+    /**
+     * Добавляет запись в БД
+     */
     public function insert()
     {
         $db = Eresus_CMS::getLegacyKernel()->db;
@@ -91,6 +123,9 @@ class TAutoReplace extends TListContentPlugin
         HTTP::redirect(arg('submitURL'));
     }
 
+    /**
+     * Обновляет запись в БД
+     */
     public function update()
     {
         $db = Eresus_CMS::getLegacyKernel()->db;
@@ -104,6 +139,11 @@ class TAutoReplace extends TListContentPlugin
         HTTP::redirect(arg('submitURL'));
     }
 
+    /**
+     * Диалог добавления автозамены
+     *
+     * @return string
+     */
     public function adminAddItem()
     {
         $form = array(
@@ -130,6 +170,10 @@ class TAutoReplace extends TListContentPlugin
         return $result;
     }
 
+    /**
+     * Диалог изменения автозамены
+     * @return string
+     */
     public function adminEditItem()
     {
         $db = Eresus_CMS::getLegacyKernel()->db;
@@ -158,11 +202,23 @@ class TAutoReplace extends TListContentPlugin
         return $result;
     }
 
+    /**
+     * Орисовывает интерфейс
+     *
+     * @return string
+     */
     public function adminRender()
     {
         return $this->adminRenderContent();
     }
 
+    /**
+     * Проводит замены
+     *
+     * @param string $text
+     *
+     * @return string
+     */
     public function clientOnPageRender($text)
     {
         $db = Eresus_CMS::getLegacyKernel()->db;
@@ -185,6 +241,9 @@ class TAutoReplace extends TListContentPlugin
         return $text;
     }
 
+    /**
+     * Добавляет пункт в меню «Расширения»
+     */
     public function adminOnMenuRender()
     {
         /* @var TAdminUI $page */

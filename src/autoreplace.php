@@ -41,7 +41,7 @@ class TAutoReplace extends TListContentPlugin
      * Требуемая версия CMS
      * @var string
      */
-    public $kernel = '3.00a';
+    public $kernel = '3.01a';
 
     /**
      * Название модуля

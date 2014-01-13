@@ -247,7 +247,7 @@ class TAutoReplace extends TListContentPlugin
     {
         /* @var TAdminUI $page */
         $page = Eresus_Kernel::app()->getPage();
-        $page->addMenuItem('Расширения', array("access" => EDITOR, "link" => $this->name,
+        $page->addMenuItem('Расширения', array("access" => EDITOR, "link" => $this->getName(),
             "caption" => $this->title, "hint" => $this->description));
     }
 }

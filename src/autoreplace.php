@@ -140,11 +140,7 @@ class TAutoReplace extends TListContentPlugin
      */
     public function update()
     {
-        $table = ORM::getTable($this, 'Replace');
-
-        /** @var AutoReplace_Entity_Replace $replace */
-        $replace = $table->find(arg('update', 'int'));
-        // TODO Если ничего не надйено...
+        $replace = $this->findReplace(arg('update', 'int'));
 
         $replace->active = true; // TODO Неужели?
         $replace->caption = arg('caption');
@@ -152,7 +148,7 @@ class TAutoReplace extends TListContentPlugin
         $replace->dst = arg('dst');
         $replace->re = arg('re', 'int');
 
-        $table->update($replace);
+        $replace->getTable()->update($replace);
 
         HTTP::redirect(arg('submitURL'));
     }
@@ -194,29 +190,28 @@ class TAutoReplace extends TListContentPlugin
      */
     public function adminEditItem()
     {
-        $db = Eresus_CMS::getLegacyKernel()->db;
-        $item = $db->selectItem($this->table['name'], "`id`='" . arg('id') . "'");
+        $replace = $this->findReplace(arg('id', 'int'));
         $form = array(
             'name' => 'EditForm',
             'caption' => 'Редактировать автозамену',
             'width' => '500px',
             'fields' => array(
-                array('type' => 'hidden', 'name' => 'update', 'value' => $item['id']),
-                array('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%',
-                    'maxlength' => '255'),
-                array('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%',
-                    'maxlength' => '255', 'pattern' => '/.+/',
+                array('type' => 'hidden', 'name' => 'update', 'value' => $replace->id),
+                array('type' => 'edit', 'name' => 'caption', 'label' => 'Название',
+                    'width' => '100%', 'maxlength' => '255'),
+                array('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять',
+                    'width' => '100%', 'maxlength' => '255', 'pattern' => '/.+/',
                     'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
                 array('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
-                array('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%',
-                    'maxlength' => '255'),
+                array('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять',
+                    'width' => '100%', 'maxlength' => '255'),
             ),
             'buttons' => array('ok', 'apply', 'cancel'),
         );
 
         /** @var TAdminUI $page */
         $page = Eresus_Kernel::app()->getPage();
-        $result = $page->renderForm($form, $item);
+        $result = $page->renderForm($form, (array) $replace);
         return $result;
     }
 
@@ -267,6 +262,28 @@ class TAutoReplace extends TListContentPlugin
         $page = Eresus_Kernel::app()->getPage();
         $page->addMenuItem('Расширения', array("access" => EDITOR, "link" => $this->getName(),
             "caption" => $this->title, "hint" => $this->description));
+    }
+
+    /**
+     * Возвращает замену по идентификатору
+     *
+     * @param int $id
+     *
+     * @return AutoReplace_Entity_Replace
+     *
+     * @throws Eresus_CMS_Exception_NotFound
+     *
+     * @since 2.01
+     */
+    private function findReplace($id)
+    {
+        $table = ORM::getTable($this, 'Replace');
+        $replace = $table->find(arg('update', 'int'));
+        if (is_null($replace))
+        {
+            throw new Eresus_CMS_Exception_NotFound;
+        }
+        return $replace;
     }
 }
 

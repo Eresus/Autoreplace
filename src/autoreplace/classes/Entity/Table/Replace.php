@@ -30,7 +30,7 @@
 /**
  * Таблица замен
  */
-class AutoReplace_Entity_Replace extends ORM_Table
+class AutoReplace_Entity_Table_Replace extends ORM_Table
 {
     protected function setTableDefinition()
     {

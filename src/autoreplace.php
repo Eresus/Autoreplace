@@ -102,7 +102,7 @@ class TAutoReplace extends TListContentPlugin
     {
         parent::install();
         $driver = ORM::getManager()->getDriver();
-        $driver->createTable(ORM::getTable($this, 'Autoreplace'));
+        $driver->createTable(ORM::getTable($this, 'Replace'));
     }
 
     /**
@@ -111,7 +111,7 @@ class TAutoReplace extends TListContentPlugin
     public function uninstall()
     {
         $driver = ORM::getManager()->getDriver();
-        $driver->dropTable(ORM::getTable($this, 'Autoreplace'));
+        $driver->dropTable(ORM::getTable($this, 'Replace'));
         parent::install();
     }
 
@@ -120,14 +120,18 @@ class TAutoReplace extends TListContentPlugin
      */
     public function insert()
     {
-        $db = Eresus_CMS::getLegacyKernel()->db;
-        $item['active'] = true;
-        $item['position'] = $db->count($this->table['name']);
-        $item['caption'] = arg('caption', 'dbsafe');
-        $item['src'] = arg('src', 'dbsafe');
-        $item['dst'] = arg('dst', 'dbsafe');
-        $item['re'] = arg('re', 'int');
-        $db->insert($this->table['name'], $item);
+        $table = ORM::getTable($this, 'Replace');
+
+        $replace = new AutoReplace_Entity_Replace();
+        $replace->active = true;
+        $replace->position = $table->count();
+        $replace->caption = arg('caption');
+        $replace->src = arg('src');
+        $replace->dst = arg('dst');
+        $replace->re = arg('re', 'int');
+
+        $table->persist($replace);
+
         HTTP::redirect(arg('submitURL'));
     }
 
@@ -136,14 +140,20 @@ class TAutoReplace extends TListContentPlugin
      */
     public function update()
     {
-        $db = Eresus_CMS::getLegacyKernel()->db;
-        $item = $db->selectItem($this->table['name'], "`id`='" . arg('update', 'int') . "'");
-        $item['active'] = true;
-        $item['caption'] = arg('caption', 'dbsafe');
-        $item['src'] = arg('src', 'dbsafe');
-        $item['dst'] = arg('dst', 'dbsafe');
-        $item['re'] = arg('re', 'int');
-        $db->updateItem($this->table['name'], $item, "`id`='" . $item['id'] . "'");
+        $table = ORM::getTable($this, 'Replace');
+
+        /** @var AutoReplace_Entity_Replace $replace */
+        $replace = $table->find(arg('update', 'int'));
+        // TODO Если ничего не надйено...
+
+        $replace->active = true; // TODO Неужели?
+        $replace->caption = arg('caption');
+        $replace->src = arg('src');
+        $replace->dst = arg('dst');
+        $replace->re = arg('re', 'int');
+
+        $table->update($replace);
+
         HTTP::redirect(arg('submitURL'));
     }
 

@@ -29,6 +29,14 @@
 
 /**
  * Замена
+ *
+ * @property int    $id        идентификатор
+ * @property bool   $active    вкл/выкл
+ * @property int    $position  порядковый номер
+ * @property string $caption   подпись
+ * @property string $src       исходная строка
+ * @property string $dst       замена
+ * @property bool   $re        если true, то $src — регулярное выражение
  */
 class AutoReplace_Entity_Replace extends ORM_Entity
 {

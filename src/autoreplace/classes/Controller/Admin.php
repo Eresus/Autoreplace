@@ -134,6 +134,42 @@ class AutoReplace_Controller_Admin extends Eresus_Plugin_Controller_Admin_Conten
     }
 
     /**
+     * Перемещает замену выше по списку
+     *
+     * @param Eresus_CMS_Request $request
+     *
+     * @return Eresus_HTTP_Redirect
+     *
+     * @since x.xx
+     */
+    public function actionUp(Eresus_CMS_Request $request)
+    {
+        $replace = $this->getReplace($request->query->getInt('id'));
+        $helper = new ORM_Helper_Ordering();
+        $helper->moveUp($replace);
+        $url = Eresus_Kernel::app()->getPage()->url();
+        return new Eresus_HTTP_Redirect($url);
+    }
+
+    /**
+     * Перемещает замену ниже по списку
+     *
+     * @param Eresus_CMS_Request $request
+     *
+     * @return Eresus_HTTP_Redirect
+     *
+     * @since x.xx
+     */
+    public function actionDown(Eresus_CMS_Request $request)
+    {
+        $replace = $this->getReplace($request->query->getInt('id'));
+        $helper = new ORM_Helper_Ordering();
+        $helper->moveDown($replace);
+        $url = Eresus_Kernel::app()->getPage()->url();
+        return new Eresus_HTTP_Redirect($url);
+    }
+
+    /**
      * Возвращает замену с указанным ID
      *
      * @param int $id  идентифкатор замены

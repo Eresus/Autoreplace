@@ -139,27 +139,5 @@ class AutoReplace extends ContentPlugin
         $page->addMenuItem('Расширения', array("access" => EDITOR, "link" => $this->getName(),
             "caption" => $this->title, "hint" => $this->description));
     }
-
-    /**
-     * Возвращает замену по идентификатору
-     *
-     * @param int $id
-     *
-     * @return AutoReplace_Entity_Replace
-     *
-     * @throws Eresus_CMS_Exception_NotFound
-     *
-     * @since 2.01
-     */
-    private function findReplace($id)
-    {
-        $table = ORM::getTable($this, 'Replace');
-        $replace = $table->find(arg('update', 'int'));
-        if (is_null($replace))
-        {
-            throw new Eresus_CMS_Exception_NotFound;
-        }
-        return $replace;
-    }
 }
 

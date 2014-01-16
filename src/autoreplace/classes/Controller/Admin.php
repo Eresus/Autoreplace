@@ -116,6 +116,24 @@ class AutoReplace_Controller_Admin extends Eresus_Plugin_Controller_Admin_Conten
     }
 
     /**
+     * Переключает активность
+     *
+     * @param Eresus_CMS_Request $request
+     *
+     * @return Eresus_HTTP_Redirect
+     *
+     * @since x.xx
+     */
+    public function actionToggle(Eresus_CMS_Request $request)
+    {
+        $replace = $this->getReplace($request->query->getInt('id'));
+        $replace->active = !$replace->active;
+        $replace->getTable()->update($replace);
+        $url = Eresus_Kernel::app()->getPage()->url();
+        return new Eresus_HTTP_Redirect($url);
+    }
+
+    /**
      * Возвращает замену с указанным ID
      *
      * @param int $id  идентифкатор замены

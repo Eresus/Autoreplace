@@ -30,54 +30,12 @@
  */
 class AutoReplace extends ContentPlugin
 {
-<<<<<<< HEAD
-	public $name = 'autoreplace';
-	public $version = '2.00';
-	public $kernel = '3.00a';
-	public $title = 'Автозамена';
-	public $description = 'Автозамена фрагментов страницы';
-	public $type = 'client,content,ondemand';
-	public $table = array (
-		'name' => 'autoreplace',
-		'key'=> 'id',
-		'sortMode' => 'position',
-		'sortDesc' => false,
-		'columns' => array(
-			array('name' => 'caption', 'caption' => 'Замена'),
-		),
-		'controls' => array (
-			'delete' => '',
-			'edit' => '',
-			'position' => '',
-			'toggle' => '',
-		),
-		'tabs' => array(
-			'width'=>'180px',
-			'items'=>array(
-				array('caption'=>strAdd, 'name'=>'action', 'value'=>'create')
-			),
-		),
-		'sql' => "(
-			`id` int(10) unsigned NOT NULL auto_increment,
-			`active` tinyint(1) unsigned NOT NULL default '1',
-			`position` int(10) unsigned default NULL,
-			`caption` varchar(255) default '',
-			`src` varchar(255) default '',
-			`dst` varchar(255) default '',
-			`re` tinyint(1) default '0',
-			PRIMARY KEY  (`id`),
-			KEY `active` (`active`),
-			KEY `position` (`position`)
-		) ENGINE=MyISAM;",
-	);
-=======
     /**
      * Версия модуля
      *
      * @var string
      */
     public $version = '${product.version}';
->>>>>>> release/v2.01
 
     /**
      * Требуемая версия CMS

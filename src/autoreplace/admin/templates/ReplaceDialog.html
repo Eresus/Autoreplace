@@ -1,0 +1,64 @@
+<div class="box ui-widget-content" style="min-width: 600px; display: inline-block;">
+    <div class="header">Добавление замены</div>
+    <div class="content">
+
+        <form action="admin.php" method="post">
+
+            <div class="hidden">
+                <input type="hidden" name="mod" value="{$mod}">
+                <input type="hidden" name="action" value="add">
+            </div>
+
+            <table width="100%">
+                <colgroup>
+                    <col width="10%">
+                    <col width="*">
+                </colgroup>
+                <tr>
+                    <td class="formLabel">
+                        <label for="caption-input">Описание</label>
+                    </td>
+                    <td>
+                        <input type="text" name="caption" id="caption-input" maxlength="255"
+                            required style="width: 99%">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formLabel">
+                        <label for="src-input">Что заменять</label>
+                    </td>
+                    <td>
+                        <input type="text" name="src" id="src-input" maxlength="255"
+                            required style="width: 99%">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="re" value="1">
+                            В «Что заменять» указано регулярное выражение
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formLabel">
+                        <label for="dst-input">Чем заменять</label>
+                    </td>
+                    <td>
+                        <input type="text" name="dst" id="dst-input" maxlength="255"
+                            required style="width: 99%">
+                    </td>
+                </tr>
+
+            </table>
+
+            <div class="ui-button-box">
+                <button type="submit">Добавить</button>
+                <button type="button" class="cancel" onclick="history.back();">Отменить</button>
+            </div>
+
+        </form>
+    </div>
+</div>

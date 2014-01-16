@@ -28,7 +28,7 @@
 /**
  * Основной класс модуля
  */
-class TAutoReplace extends TListContentPlugin
+class AutoReplace extends ContentPlugin
 {
     /**
      * Версия модуля
@@ -116,26 +116,6 @@ class TAutoReplace extends TListContentPlugin
     }
 
     /**
-     * Добавляет запись в БД
-     */
-    public function insert()
-    {
-        $table = ORM::getTable($this, 'Replace');
-
-        $replace = new AutoReplace_Entity_Replace();
-        $replace->active = true;
-        $replace->position = $table->count();
-        $replace->caption = arg('caption');
-        $replace->src = arg('src');
-        $replace->dst = arg('dst');
-        $replace->re = arg('re', 'int');
-
-        $table->persist($replace);
-
-        HTTP::redirect(arg('submitURL'));
-    }
-
-    /**
      * Обновляет запись в БД
      */
     public function update()
@@ -151,37 +131,6 @@ class TAutoReplace extends TListContentPlugin
         $replace->getTable()->update($replace);
 
         HTTP::redirect(arg('submitURL'));
-    }
-
-    /**
-     * Диалог добавления автозамены
-     *
-     * @return string
-     */
-    public function adminAddItem()
-    {
-        $form = array(
-            'name' => 'AddForm',
-            'caption' => 'Добавить автозамену',
-            'width' => '100%',
-            'fields' => array(
-                array('type' => 'hidden', 'name' => 'action', 'value' => 'insert'),
-                array('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%',
-                    'maxlength' => '255'),
-                array('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%',
-                    'maxlength' => '255', 'pattern' => '/.+/',
-                    'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
-                array('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
-                array('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%',
-                    'maxlength' => '255'),
-            ),
-            'buttons' => array('ok', 'cancel'),
-        );
-
-        /** @var TAdminUI $page */
-        $page = Eresus_Kernel::app()->getPage();
-        $result = $page->renderForm($form);
-        return $result;
     }
 
     /**
@@ -216,13 +165,16 @@ class TAutoReplace extends TListContentPlugin
     }
 
     /**
-     * Орисовывает интерфейс
+     * Орисовывает АИ
      *
-     * @return string
+     * @param Eresus_CMS_Request $request
+     *
+     * @return string|Eresus_HTTP_Response
      */
-    public function adminRender()
+    public function adminRender(Eresus_CMS_Request $request)
     {
-        return $this->adminRenderContent();
+        $controller = new AutoReplace_Controller_Admin($this);
+        return $controller->getHtml($request);
     }
 
     /**

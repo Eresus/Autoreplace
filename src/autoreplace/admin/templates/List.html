@@ -1,0 +1,18 @@
+<a href="{$actionAdd}" class="button button_do_add">Добавить</a>
+
+{if count($list->getItems())}
+<table class="admList">
+    <tr>
+        <th>Управление</th>
+        <th>Описание замены</th>
+    </tr>
+    {foreach $list->getItems() item}
+    <tr>
+        <td class="ctrl">
+            {$list->getControls($item, 'edit', 'toggle', 'delete', 'ordering')}
+        </td>
+        <td>{$item->caption}</td>
+    </tr>
+    {/foreach}
+</table>
+{/if}

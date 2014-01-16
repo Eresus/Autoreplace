@@ -39,7 +39,7 @@ class AutoReplace_Entity_Table_Replace extends ORM_Table
             'id' => array(
                 'type' => 'integer',
                 'unsigned' => true,
-                'auto_increment' => true,
+                'autoincrement' => true,
             ),
             'active' => array(
                 'type' => 'boolean',

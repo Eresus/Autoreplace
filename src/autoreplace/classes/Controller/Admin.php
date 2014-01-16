@@ -170,6 +170,23 @@ class AutoReplace_Controller_Admin extends Eresus_Plugin_Controller_Admin_Conten
     }
 
     /**
+     * Удаляет замену
+     *
+     * @param Eresus_CMS_Request $request
+     *
+     * @return Eresus_HTTP_Redirect
+     *
+     * @since x.xx
+     */
+    public function actionDelete(Eresus_CMS_Request $request)
+    {
+        $replace = $this->getReplace($request->query->getInt('id'));
+        $replace->getTable()->delete($replace);
+        $url = Eresus_Kernel::app()->getPage()->url();
+        return new Eresus_HTTP_Redirect($url);
+    }
+
+    /**
      * Возвращает замену с указанным ID
      *
      * @param int $id  идентифкатор замены

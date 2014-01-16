@@ -40,5 +40,24 @@
  */
 class AutoReplace_Entity_Replace extends ORM_Entity
 {
+    /**
+     * Вызывается перед изменением в БД
+     *
+     * @param ezcQuery|ezcQueryInsert|ezcQueryUpdate $query  запрос
+     *
+     * @return ezcQuery
+     *
+     * @since x.xx
+     */
+    public function beforeSave(ezcQuery $query)
+    {
+        if ($this->getEntityState() == ORM_Entity::IS_NEW)
+        {
+            $this->position = $this->getTable()->count();
+            $query->set('position',
+                $query->bindValue($this->position, ':position', PDO::PARAM_INT));
+        }
+        return $query;
+    }
 }
 

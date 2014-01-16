@@ -58,33 +58,6 @@ class AutoReplace extends ContentPlugin
     public $description = 'Автозамена фрагментов страницы';
 
     /**
-     * Таблица БД
-     * @var array
-     * @deprecated
-     */
-    public $table = array(
-        'name' => 'autoreplace',
-        'key' => 'id',
-        'sortMode' => 'position',
-        'sortDesc' => false,
-        'columns' => array(
-            array('name' => 'caption', 'caption' => 'Замена'),
-        ),
-        'controls' => array(
-            'delete' => '',
-            'edit' => '',
-            'position' => '',
-            'toggle' => '',
-        ),
-        'tabs' => array(
-            'width' => '180px',
-            'items' => array(
-                array('caption' => strAdd, 'name' => 'action', 'value' => 'create')
-            ),
-        )
-    );
-
-    /**
      * Конструктор модуля
      */
     public function __construct()
@@ -113,55 +86,6 @@ class AutoReplace extends ContentPlugin
         $driver = ORM::getManager()->getDriver();
         $driver->dropTable(ORM::getTable($this, 'Replace'));
         parent::install();
-    }
-
-    /**
-     * Обновляет запись в БД
-     */
-    public function update()
-    {
-        $replace = $this->findReplace(arg('update', 'int'));
-
-        $replace->active = true; // TODO Неужели?
-        $replace->caption = arg('caption');
-        $replace->src = arg('src');
-        $replace->dst = arg('dst');
-        $replace->re = arg('re', 'int');
-
-        $replace->getTable()->update($replace);
-
-        HTTP::redirect(arg('submitURL'));
-    }
-
-    /**
-     * Диалог изменения автозамены
-     * @return string
-     */
-    public function adminEditItem()
-    {
-        $replace = $this->findReplace(arg('id', 'int'));
-        $form = array(
-            'name' => 'EditForm',
-            'caption' => 'Редактировать автозамену',
-            'width' => '500px',
-            'fields' => array(
-                array('type' => 'hidden', 'name' => 'update', 'value' => $replace->id),
-                array('type' => 'edit', 'name' => 'caption', 'label' => 'Название',
-                    'width' => '100%', 'maxlength' => '255'),
-                array('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять',
-                    'width' => '100%', 'maxlength' => '255', 'pattern' => '/.+/',
-                    'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
-                array('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
-                array('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять',
-                    'width' => '100%', 'maxlength' => '255'),
-            ),
-            'buttons' => array('ok', 'apply', 'cancel'),
-        );
-
-        /** @var TAdminUI $page */
-        $page = Eresus_Kernel::app()->getPage();
-        $result = $page->renderForm($form, (array) $replace);
-        return $result;
     }
 
     /**

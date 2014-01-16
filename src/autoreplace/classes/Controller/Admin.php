@@ -85,5 +85,56 @@ class AutoReplace_Controller_Admin extends Eresus_Plugin_Controller_Admin_Conten
         $html = $tmpl->compile(array('mod' => $args->get('mod')));
         return $html;
     }
+
+    /**
+     * Изменение замены
+     *
+     * @param Eresus_CMS_Request $request
+     *
+     * @return string|Eresus_HTTP_Response
+     *
+     * @since x.xx
+     */
+    protected function actionEdit(Eresus_CMS_Request $request)
+    {
+        $args = $request->getMethod() == 'POST' ? $request->request : $request->query;
+        $replace = $this->getReplace($args->getInt('id'));
+        if ($request->getMethod() == 'POST')
+        {
+            $replace->caption = $args->get('caption');
+            $replace->src = $args->get('src');
+            $replace->dst = $args->get('dst');
+            $replace->re = $args->getInt('re');
+            $replace->active = $args->getInt('active');
+            $replace->getTable()->update($replace);
+            $url = Eresus_Kernel::app()->getPage()->url();
+            return new Eresus_HTTP_Redirect($url);
+        }
+        $tmpl = $this->getPlugin()->templates()->admin('ReplaceDialog.html');
+        $html = $tmpl->compile(array('mod' => $args->get('mod'), 'replace' => $replace));
+        return $html;
+    }
+
+    /**
+     * Возвращает замену с указанным ID
+     *
+     * @param int $id  идентифкатор замены
+     *
+     * @return AutoReplace_Entity_Replace
+     *
+     * @throws Eresus_CMS_Exception_NotFound
+     *
+     * @since x.xx
+     */
+    private function getReplace($id)
+    {
+        $table = ORM::getTable($this->getPlugin(), 'Replace');
+        $replace = $table->find($id);
+        if (is_null($replace))
+        {
+            throw new Eresus_CMS_Exception_NotFound('Запрошенный объект не найден');
+        }
+        return $replace;
+    }
 }
 

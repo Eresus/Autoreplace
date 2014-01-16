@@ -53,7 +53,10 @@ class AutoReplace_Entity_Replace extends ORM_Entity
     {
         if ($this->getEntityState() == ORM_Entity::IS_NEW)
         {
-            $this->position = $this->getTable()->count();
+            $q = $this->getTable()->createSelectQuery(false);
+            $q->select($q->alias($q->expr->max('position'), 'max_pos'));
+            $data = $q->fetch();
+            $this->position = $data['max_pos'] ? $data['max_pos'] + 1 : 0;
             $query->set('position',
                 $query->bindValue($this->position, ':position', PDO::PARAM_INT));
         }

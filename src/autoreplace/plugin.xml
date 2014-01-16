@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<declaration uid="ru.eresus.plugins.autoreplace" format="1.00">
+
+	<requires>
+        <plugin name="ui" min="2.03a" max="2.03" />
+		<plugin name="orm" min="3.01a" max="3.01" />
+	</requires>
+
+</declaration>

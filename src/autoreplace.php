@@ -64,7 +64,7 @@ class AutoReplace extends ContentPlugin
     {
         parent::__construct();
         $evd = Eresus_Kernel::app()->getEventDispatcher();
-        $evd->addListener('cms.client.render_page', array($this, 'clientOnPageRender'));
+        $evd->addListener('cms.client.render_page', array($this, 'applyReplaces'));
         $evd->addListener('cms.admin.start', array($this, 'adminOnMenuRender'));
     }
 
@@ -106,23 +106,23 @@ class AutoReplace extends ContentPlugin
      *
      * @param Eresus_Event_Render $event
      */
-    public function clientOnPageRender(Eresus_Event_Render $event)
+    public function applyReplaces(Eresus_Event_Render $event)
     {
-        $db = Eresus_CMS::getLegacyKernel()->db;
-        $items = $db->select($this->table['name'], '`active`=1', $this->table['sortMode'],
-            $this->table['sortDesc']);
-        if (count($items))
+        $table = ORM::getTable($this, 'Replace');
+        /** @var AutoReplace_Entity_Replace[] $replaces */
+        $replaces = $table->findAllBy(array('active' => true));
+        if (count($replaces) > 0)
         {
             $text = $event->getText();
-            foreach ($items as $item)
+            foreach ($replaces as $replace)
             {
-                if ($item['re'])
+                if ($replace->re)
                 {
-                    $text = preg_replace($item['src'], $item['dst'], $text);
+                    $text = preg_replace($replace->src, $replace->dst, $text);
                 }
                 else
                 {
-                    $text = str_replace($item['src'], $item['dst'], $text);
+                    $text = str_replace($replace->src, $replace->dst, $text);
                 }
             }
             $event->setText($text);

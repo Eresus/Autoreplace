@@ -28,7 +28,7 @@
 /**
  * Основной класс модуля
  */
-class TAutoReplace extends TListContentPlugin
+class AutoReplace extends ContentPlugin
 {
     /**
      * Версия модуля
@@ -58,158 +58,47 @@ class TAutoReplace extends TListContentPlugin
     public $description = 'Автозамена фрагментов страницы';
 
     /**
-     * Таблица БД
-     * @var array
-     * @deprecated
-     */
-    public $table = array(
-        'name' => 'autoreplace',
-        'key' => 'id',
-        'sortMode' => 'position',
-        'sortDesc' => false,
-        'columns' => array(
-            array('name' => 'caption', 'caption' => 'Замена'),
-        ),
-        'controls' => array(
-            'delete' => '',
-            'edit' => '',
-            'position' => '',
-            'toggle' => '',
-        ),
-        'tabs' => array(
-            'width' => '180px',
-            'items' => array(
-                array('caption' => strAdd, 'name' => 'action', 'value' => 'create')
-            ),
-        ),
-        'sql' => "(
-			`id` int(10) unsigned NOT NULL auto_increment,
-			`active` tinyint(1) unsigned NOT NULL default '1',
-			`position` int(10) unsigned default NULL,
-			`caption` varchar(255) default '',
-			`src` varchar(255) default '',
-			`dst` varchar(255) default '',
-			`re` tinyint(1) default '0',
-			PRIMARY KEY  (`id`),
-			KEY `active` (`active`),
-			KEY `position` (`position`)
-		) ENGINE=MyISAM;",
-    );
-
-    /**
      * Конструктор модуля
      */
     public function __construct()
     {
         parent::__construct();
         $evd = Eresus_Kernel::app()->getEventDispatcher();
-        $evd->addListener('cms.client.render_page', array($this, 'clientOnPageRender'));
+        $evd->addListener('cms.client.render_page', array($this, 'applyReplaces'));
         $evd->addListener('cms.admin.start', array($this, 'adminOnMenuRender'));
     }
 
     /**
-     * Добавляет запись в БД
+     * Действия при установке модуля
      */
-    public function insert()
+    public function install()
     {
-        $db = Eresus_CMS::getLegacyKernel()->db;
-        $item['active'] = true;
-        $item['position'] = $db->count($this->table['name']);
-        $item['caption'] = arg('caption', 'dbsafe');
-        $item['src'] = arg('src', 'dbsafe');
-        $item['dst'] = arg('dst', 'dbsafe');
-        $item['re'] = arg('re', 'int');
-        $db->insert($this->table['name'], $item);
-        HTTP::redirect(arg('submitURL'));
+        parent::install();
+        $driver = ORM::getManager()->getDriver();
+        $driver->createTable(ORM::getTable($this, 'Replace'));
     }
 
     /**
-     * Обновляет запись в БД
+     * Действия при удалении модуля
      */
-    public function update()
+    public function uninstall()
     {
-        $db = Eresus_CMS::getLegacyKernel()->db;
-        $item = $db->selectItem($this->table['name'], "`id`='" . arg('update', 'int') . "'");
-        $item['active'] = true;
-        $item['caption'] = arg('caption', 'dbsafe');
-        $item['src'] = arg('src', 'dbsafe');
-        $item['dst'] = arg('dst', 'dbsafe');
-        $item['re'] = arg('re', 'int');
-        $db->updateItem($this->table['name'], $item, "`id`='" . $item['id'] . "'");
-        HTTP::redirect(arg('submitURL'));
+        $driver = ORM::getManager()->getDriver();
+        $driver->dropTable(ORM::getTable($this, 'Replace'));
+        parent::install();
     }
 
     /**
-     * Диалог добавления автозамены
+     * Орисовывает АИ
      *
-     * @return string
-     */
-    public function adminAddItem()
-    {
-        $form = array(
-            'name' => 'AddForm',
-            'caption' => 'Добавить автозамену',
-            'width' => '100%',
-            'fields' => array(
-                array('type' => 'hidden', 'name' => 'action', 'value' => 'insert'),
-                array('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%',
-                    'maxlength' => '255'),
-                array('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%',
-                    'maxlength' => '255', 'pattern' => '/.+/',
-                    'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
-                array('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
-                array('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%',
-                    'maxlength' => '255'),
-            ),
-            'buttons' => array('ok', 'cancel'),
-        );
-
-        /** @var TAdminUI $page */
-        $page = Eresus_Kernel::app()->getPage();
-        $result = $page->renderForm($form);
-        return $result;
-    }
-
-    /**
-     * Диалог изменения автозамены
-     * @return string
-     */
-    public function adminEditItem()
-    {
-        $db = Eresus_CMS::getLegacyKernel()->db;
-        $item = $db->selectItem($this->table['name'], "`id`='" . arg('id') . "'");
-        $form = array(
-            'name' => 'EditForm',
-            'caption' => 'Редактировать автозамену',
-            'width' => '500px',
-            'fields' => array(
-                array('type' => 'hidden', 'name' => 'update', 'value' => $item['id']),
-                array('type' => 'edit', 'name' => 'caption', 'label' => 'Название', 'width' => '100%',
-                    'maxlength' => '255'),
-                array('type' => 'edit', 'name' => 'src', 'label' => 'Что заменять', 'width' => '100%',
-                    'maxlength' => '255', 'pattern' => '/.+/',
-                    'errormsg' => 'Вы должны указать текст в поле "Что заменять"'),
-                array('type' => 'checkbox', 'name' => 're', 'label' => 'Регулярное выражение'),
-                array('type' => 'edit', 'name' => 'dst', 'label' => 'На что заменять', 'width' => '100%',
-                    'maxlength' => '255'),
-            ),
-            'buttons' => array('ok', 'apply', 'cancel'),
-        );
-
-        /** @var TAdminUI $page */
-        $page = Eresus_Kernel::app()->getPage();
-        $result = $page->renderForm($form, $item);
-        return $result;
-    }
-
-    /**
-     * Орисовывает интерфейс
+     * @param Eresus_CMS_Request $request
      *
-     * @return string
+     * @return string|Eresus_HTTP_Response
      */
-    public function adminRender()
+    public function adminRender(Eresus_CMS_Request $request)
     {
-        return $this->adminRenderContent();
+        $controller = new AutoReplace_Controller_Admin($this);
+        return $controller->getHtml($request);
     }
 
     /**
@@ -217,23 +106,23 @@ class TAutoReplace extends TListContentPlugin
      *
      * @param Eresus_Event_Render $event
      */
-    public function clientOnPageRender(Eresus_Event_Render $event)
+    public function applyReplaces(Eresus_Event_Render $event)
     {
-        $db = Eresus_CMS::getLegacyKernel()->db;
-        $items = $db->select($this->table['name'], '`active`=1', $this->table['sortMode'],
-            $this->table['sortDesc']);
-        if (count($items))
+        $table = ORM::getTable($this, 'Replace');
+        /** @var AutoReplace_Entity_Replace[] $replaces */
+        $replaces = $table->findAllBy(array('active' => true));
+        if (count($replaces) > 0)
         {
             $text = $event->getText();
-            foreach ($items as $item)
+            foreach ($replaces as $replace)
             {
-                if ($item['re'])
+                if ($replace->re)
                 {
-                    $text = preg_replace($item['src'], $item['dst'], $text);
+                    $text = preg_replace($replace->src, $replace->dst, $text);
                 }
                 else
                 {
-                    $text = str_replace($item['src'], $item['dst'], $text);
+                    $text = str_replace($replace->src, $replace->dst, $text);
                 }
             }
             $event->setText($text);

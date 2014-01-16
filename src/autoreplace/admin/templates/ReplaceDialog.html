@@ -1,0 +1,80 @@
+<div class="box ui-widget-content" style="min-width: 600px; display: inline-block;">
+    <div class="header">{if $replace}Изменение{else}Добавление{/if} замены</div>
+    <div class="content">
+
+        <form action="admin.php" method="post">
+
+            <div class="hidden">
+                <input type="hidden" name="mod" value="{$mod}">
+                <input type="hidden" name="action" value="{if $replace}edit{else}add{/if}">
+                {if $replace}<input type="hidden" name="id" value="{$replace->id}">{/if}
+            </div>
+
+            <table width="100%">
+                <colgroup>
+                    <col width="10%">
+                    <col width="*">
+                </colgroup>
+                <tr>
+                    <td class="formLabel">
+                        <label for="caption-input">Описание</label>
+                    </td>
+                    <td>
+                        <input type="text" name="caption" id="caption-input" maxlength="255"
+                            required style="width: 99%"
+                            {if $replace} value="{$replace->caption}"{/if}>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formLabel">
+                        <label for="src-input">Что заменять</label>
+                    </td>
+                    <td>
+                        <input type="text" name="src" id="src-input" maxlength="255"
+                            required style="width: 99%"{if $replace} value="{$replace->src}"{/if}>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="re" value="1"
+                                {if $replace and $replace->re} checked{/if}>
+                            В «Что заменять» указано регулярное выражение
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="formLabel">
+                        <label for="dst-input">Чем заменять</label>
+                    </td>
+                    <td>
+                        <input type="text" name="dst" id="dst-input" maxlength="255"
+                            required style="width: 99%"{if $replace} value="{$replace->dst}"{/if}>
+                    </td>
+                </tr>
+                {if $replace}
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="active" value="1"
+                                {if $replace and $replace->active} checked{/if}>
+                            Включить
+                        </label>
+                    </td>
+                </tr>
+                {/if}
+
+            </table>
+
+            <div class="ui-button-box">
+                <button type="submit">{if $replace}Сохранить{else}Добавить{/if}</button>
+                <button type="button" class="cancel" onclick="history.back();">Отменить</button>
+            </div>
+
+        </form>
+    </div>
+</div>
